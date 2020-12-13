@@ -14,6 +14,8 @@ import (
 	"math/rand"
 	"net/url"
 	"time"
+
+  "os/exec"
 )
 
 const (
@@ -29,6 +31,16 @@ func main() {
 	select {}
 }
 
+
+func Callpy() {
+  cmd := exec.Command("sudo", "python3","/home/pi/workspace/empty.py")
+  output, err := cmd.CombinedOutput()
+  if (err != nil) {
+      fmt.Println(err)
+  }
+  return string(output)
+}
+
 // runCommandHandler use to test receiving commands from the device service and responded back for get/set commands.
 //
 // Use a REST client to send a command to the service like:
@@ -37,7 +49,7 @@ func main() {
 // http://localhost:49982/api/v1/devices/<device id>/randnum - use GET
 //
 // If command micro service is running, the same can be performed through command to device service
-// like this http://localhost:48082/api/v1/device/<device id>/command/<command id> 
+// like this http://localhost:48082/api/v1/device/<device id>/command/<command id>
 //
 // Requires the Device Service, Command, Core Data, Metadata and Mongo to all be running
 func runCommandHandler() {
@@ -90,7 +102,7 @@ func runDataSender() {
 	data["method"] = "get"
 
 	for {
-		data["randnum"] = rand.Float64()
+		data["randnum"] = Callpy()
 		jsonData, err := json.Marshal(data)
 		if err != nil {
 			fmt.Println(err)
