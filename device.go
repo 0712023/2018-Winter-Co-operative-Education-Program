@@ -16,6 +16,7 @@ import (
 	"time"
 
   "os/exec"
+	"strconv"
 )
 
 const (
@@ -31,16 +32,19 @@ func main() {
 	select {}
 }
 
-
-func Callpy() string {
-  outputn, err := exec.Command("sudo", "python3","/home/pi/workspace/empty.py").Output()
+func Callpy() float64 {
+	outputn, err := exec.Command("sudo", "python3","/home/pi/workspace/empty.py").Output()
 	//outputn is printed value of python3 project which have '/n' at the end
-	output := string(outputn[:len(outputn)-1])
-	//parsing outputn into output which is deleted '/n' at the end
 	if (err != nil) {
 			fmt.Println(err)
 	}
-  return output
+	output := string(outputn[:len(outputn)-1])
+	//parsing outputn into output which is deleted '/n' at the end
+	outputf, errf := strconv.ParseFloat(output, 64)
+	if (errf != nil) {
+			fmt.Println(err)
+	}
+	return outputf
 }
 
 // runCommandHandler use to test receiving commands from the device service and responded back for get/set commands.
