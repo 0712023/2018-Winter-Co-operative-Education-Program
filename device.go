@@ -14,8 +14,8 @@ import (
 	"math/rand"
 	"net/url"
 	"time"
-
-  "os/exec"
+//Package for Callpy()
+	"os/exec"
 	"strconv"
 )
 
@@ -32,27 +32,29 @@ func main() {
 	select {}
 }
 
-func Callpy() float64 {
-	outputt, err := exec.Command("sudo", "python","/home/pi/workspace/getdata.py" "1").Output()
-	if (err != nil) {
-			fmt.Println(err)
+//Custom function which call external Python file.
+func Callpy(i int) float64 { //i choose which data to collect (1 is currnet temperature, and 2 is set temperature for here)
+	if (i == 1) {
+		output, err1 := exec.Command("sudo", "python", "/home/pi/workspace/Foolproof.py", "1").Output() //input "sudo python {python file} 1" at terminal
+		if (err1 != nil) {
+				fmt.Println(err1)
+		}
+		temp, err2 := strconv.ParseFloat(string(output[:len(output)-1]), 64) //delete '\n' at the end of outcome
+		if (err2 != nil) {
+			 fmt.Println(err2)
+		}
+		return temp
+	} else if (i == 2){
+		setting, err3 :=exec.Command("sudo", "python", "/home/pi/workspace/Foolproof.py", "2").Output()//input "sudo python {python file} 2" at terminal
+		if (err3 != nil) {
+				fmt.Println(err3)
+		}
+		temp, err4 := strconv.ParseFloat(string(setting[:len(setting)-1]), 64) //delete '\n' at the end of outcome
+		if (err4 != nil) {
+			 fmt.Println(err4)
+		}
+		return temp
 	}
-	temp, errt := strconv.ParseFloat(string(outputt[:len(outputt)-1])), 64)
-	if (errt != nil) {
-		 fmt.Println(errt)
-	}
-
-	settingt, errs :=exec.Command("sudo", "python","/home/pi/workspace/getdata.py" "2").Output()
-	if (errs != nil) {
-			fmt.Println(errs)
-	}
-	setting, errf := strconv.ParseFloat(string(settingt[:len(settingt)-1]), 64)
-	if (errf != nil) {
-		 fmt.Println(err)
-	}
-	data := []float64{}
-	data = append(data, temp, setting)
-	return data
 }
 
 // runCommandHandler use to test receiving commands from the device service and responded back for get/set commands.
@@ -115,9 +117,10 @@ func runDataSender() {
 	data["cmd"] = "randnum"
 	data["method"] = "get"
 
-	for {
+	for { //main loop
 		data["temperature"] = Callpy(1)
 		data["max"] = Callpy(2)
+
 		jsonData, err := json.Marshal(data)
 		if err != nil {
 			fmt.Println(err)
