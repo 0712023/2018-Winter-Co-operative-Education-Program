@@ -14,6 +14,7 @@
 
 #include <string.h>
 #include <errno.h>
+#include <math.h>
 #include <wiring/wiringPi.h>
 #include <wiring/wiringSerial.h>
 
@@ -94,8 +95,37 @@ static float get_temperature_FP(void)
         char store[5];
         memset(store, 0, 5);
         sprintf(store, "0x%02X%2X", datastore[5], datastore[6]);
-        float temp = strtol(store, NULL, 16);
-        return temp * 0.1;
+        float temp_hex[] = strtol(store, NULL, 16);
+
+        //convert hex to dec
+        int j = 0, val, len;
+        float temp_dec;
+        /* Find the length of total number of hex digit */
+        len = strlen(temp_hex);
+        len--;
+
+        for(j=0; temp_hex[j]!='\0'; j++)
+        {
+
+            /* Find the decimal representation of hex[i] */
+            if(hex[j]>='0' && hex[j]<='9')
+            {
+                val = hex[j] - 48;
+            }
+            else if(hex[j]>='a' && hex[j]<='f')
+            {
+                val = hex[j] - 97 + 10;
+            }
+            else if(hex[j]>='A' && hex[j]<='F')
+            {
+                val = hex[j] - 65 + 10;
+            }
+
+            temp_dec += val * pow(16, len) * 0.1;
+            len--;
+        }
+
+        return temp_dec;
 
 }
 /* Periodically called by Kaa SDK. */
