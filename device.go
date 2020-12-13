@@ -33,12 +33,14 @@ func main() {
 
 
 func Callpy() string {
-  cmd := exec.Command("sudo", "python3","/home/pi/workspace/empty.py")
-  output, err := cmd.CombinedOutput()
-  if (err != nil) {
-      fmt.Println(err)
-  }
-  return string(output)
+  outputn, err := exec.Command("sudo", "python3","/home/pi/workspace/empty.py").Output()
+	//outputn is printed value of python3 project which have '/n' at the end
+	output := string(outputn[:len(outputn)-1])
+	//parsing outputn into output which is deleted '/n' at the end
+	if (err != nil) {
+			fmt.Println(err)
+	}
+  return output
 }
 
 // runCommandHandler use to test receiving commands from the device service and responded back for get/set commands.
