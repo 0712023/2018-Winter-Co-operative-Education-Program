@@ -32,7 +32,7 @@ func main() {
 }
 
 
-func Callpy() {
+func Callpy() string {
   cmd := exec.Command("sudo", "python3","/home/pi/workspace/empty.py")
   output, err := cmd.CombinedOutput()
   if (err != nil) {
