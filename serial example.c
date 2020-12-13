@@ -69,49 +69,18 @@ int main()
                 serialPutchar(fd, hex8);
                 fflush (stdout) ;
            }
-      }
-      int z;
-         for(z=0;z<28;z++)
-         {   datastore[z] = serialGetchar(fd);
+        }
+
+        for(int i=0;i<28;i++)
+         {   datastore[i] = serialGetchar(fd);
           fflush(stdout);
        //값이 계속 이상하게 나옴. 중요한건 멈추게 해야됨.
          }
 
-       char hex[3];
-       memset(hex, 0, 3);
-       sprintf(hex, "%02x%02x", datastore[5], datastore[6]);
-        float decimal = 0;                  // 10진수를 저장할 변수
-
-        int position = 0;
-        int i;
-        for ( i = strlen(hex) - 1; i >= 0; i--)    // 문자열을 역순으로 반복
-        {
-            char ch = hex[i];         // 각 자릿수에 해당하는 문자를 얻음
-
-            if (ch >= 48 && ch <= 57)         // 문자가 0~9이면(ASCII 코드 48~57)
-            {
-                // 문자에서 0에 해당하는 ASCII 코드 값을 빼고
-                // 16에 자릿수를 거듭제곱한 값을 곱함
-                decimal += (ch - 48) * pow(16, position);
-            }
-            else if (ch >= 65 && ch <= 70)    // 문자가 A~F이면(ASCII 코드 65~70)
-            {                                 // 대문자로 된 16진수의 처리
-                // 문자에서 (A에 해당하는 ASCII 코드 값 - 10)을 빼고
-                // 16에 자릿수를 거듭제곱한 값을 곱함
-                decimal += (ch - (65 - 10)) * pow(16, position);
-            }
-            else if (ch >= 97 && ch <= 102)   // 문자가 a~f이면(ASCII 코드 97~102)
-            {                                 // 소문자로 된 16진수의 처리
-                // 문자에서 (a에 해당하는 ASCII 코드 값 - 10)을 빼고
-                // 16에 자릿수를 거듭제곱한 값을 곱함
-                decimal += (ch - (97 - 10)) * pow(16, position);
-            }
-
-            position++;
-        }
-
-           // 300
-
-        printf("%f", decimal);
+         char hex[5];
+         memset(hex, 0, 5);
+         sprintf(hex, "0x%02x%02x", datastore[5], datastore[6]);
+         float temp = strtol(hex, NULL, 16);
+        printf("%f", temp);
 
 }
