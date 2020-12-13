@@ -27,9 +27,7 @@ static float get_temperature_FP(void)
 {
     /* For the sake of example, random data is used */
       char datastore[29];
-
       int fd ;
-
       if ((fd = serialOpen ("/dev/ttyUSB0", 19200)) < 0){
         fprintf (stderr, "Unable to open serial device: %s\n", strerror (errno)) ;
         return 1 ;
@@ -87,6 +85,7 @@ static float get_temperature_FP(void)
 
          for(int i=0;i<28;i++)
          {   datastore[i] = serialGetchar(fd);
+              printf("%x", serialGetchar(fd));
           fflush(stdout);
        //값이 계속 이상하게 나옴. 중요한건 멈추게 해야됨.
          }
