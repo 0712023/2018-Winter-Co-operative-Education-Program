@@ -35,14 +35,14 @@ static void example_callback(void *context)
     if (difftime(current_time, last_sample_time) >= 2) {
       if(expbool){
         temperature = get_temperature_sample_c();
-        printf("Sampled temperature: %.1f'C\n", temperature);
+        printf("Sampled temperature: %.1f°C\n", temperature);
         last_sample_time = current_time;
         kaa_user_log_record_t *log_record = kaa_logging_data_collection_create();
         log_record->temperature = temperature;
         kaa_logging_add_record(kaa_client_get_context(context)->log_collector, log_record, NULL);
       }else{
         temperature = get_temperature_sample_f();
-        printf("Sampled temperature: %.1f'F\n", temperature);
+        printf("Sampled temperature: %.1f°F\n", temperature);
         last_sample_time = current_time;
         kaa_user_log_record_t *log_record = kaa_logging_data_collection_create();
         log_record->temperature = temperature;
@@ -54,8 +54,11 @@ static void example_callback(void *context)
 static kaa_error_t on_configuration_updated(void *context, const kaa_root_configuration_t *conf)
 {
     (void) context;
-    printf("changed expbool status to %i\n", conf->expbool);
-    expbool = conf->expbool;
+    if (expbool){
+      printf("changed expbool status to Celsius\n");
+    }else{
+      printf("changed expbool status to Fahrenheit\n");
+    }expbool = conf->expbool;
     return KAA_ERR_NONE;
 }
 int main(void)

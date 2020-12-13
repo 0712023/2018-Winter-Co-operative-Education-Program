@@ -21,12 +21,12 @@ extern kaa_error_t ext_unlimited_log_storage_create(void **log_storage_context_p
 static float get_temperature_sample_c(void)
 {
     /* For the sake of example, random data is used */
-    return (rand() % 100)/10 + 25;
+    return (rand() % 100)*0.1 + 25;
 }
 static float get_temperature_sample_f(void)
 {
     /* For the sake of example, random data is used */
-    return ((rand() % 100)/10 + 25) * 1.8 + 25;
+    return ((rand() % 100)*0.1 + 25) * 1.8 + 25;
 }
 /* Periodically called by Kaa SDK. */
 static void example_callback(void *context)
@@ -36,14 +36,14 @@ static void example_callback(void *context)
     if (difftime(current_time, last_sample_time) >= 2) {
       if(expression == 1){
         temperature = get_temperature_sample_c();
-        printf("Sampled temperature: %f\n", temperature);
+        printf("Sampled temperature: %.1f'C\n", temperature);
         last_sample_time = current_time;
         kaa_user_log_record_t *log_record = kaa_logging_data_collection_create();
         log_record->temperature = temperature;
         kaa_logging_add_record(kaa_client_get_context(context)->log_collector, log_record, NULL);
       }else{
         temperature = get_temperature_sample_f();
-        printf("Sampled temperature: %f\n", temperature);
+        printf("Sampled temperature: %.1f'F\n", temperature);
         last_sample_time = current_time;
         kaa_user_log_record_t *log_record = kaa_logging_data_collection_create();
         log_record->temperature = temperature;
