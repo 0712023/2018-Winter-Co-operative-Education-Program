@@ -33,18 +33,26 @@ func main() {
 }
 
 func Callpy() float64 {
-	outputn, err := exec.Command("sudo", "python3","/home/pi/workspace/empty.py").Output()
-	//outputn is printed value of python3 project which have '/n' at the end
+	outputt, err := exec.Command("sudo", "python","/home/pi/workspace/getdata.py" "1").Output()
 	if (err != nil) {
 			fmt.Println(err)
 	}
-	output := string(outputn[:len(outputn)-1])
-	//parsing outputn into output which is deleted '/n' at the end
-	outputf, errf := strconv.ParseFloat(output, 64)
-	if (errf != nil) {
-			fmt.Println(err)
+	temp, errt := strconv.ParseFloat(string(outputt[:len(outputt)-1])), 64)
+	if (errt != nil) {
+		 fmt.Println(errt)
 	}
-	return outputf
+
+	settingt, errs :=exec.Command("sudo", "python","/home/pi/workspace/getdata.py" "2").Output()
+	if (errs != nil) {
+			fmt.Println(errs)
+	}
+	setting, errf := strconv.ParseFloat(string(settingt[:len(settingt)-1]), 64)
+	if (errf != nil) {
+		 fmt.Println(err)
+	}
+	data := []float64{}
+	data = append(data, temp, setting)
+	return data
 }
 
 // runCommandHandler use to test receiving commands from the device service and responded back for get/set commands.
@@ -108,7 +116,8 @@ func runDataSender() {
 	data["method"] = "get"
 
 	for {
-		data["randnum"] = Callpy()
+		data["temperature"] = Callpy(1)
+		data["max"] = Callpy(2)
 		jsonData, err := json.Marshal(data)
 		if err != nil {
 			fmt.Println(err)
