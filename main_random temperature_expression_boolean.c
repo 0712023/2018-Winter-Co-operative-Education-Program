@@ -54,11 +54,12 @@ static void example_callback(void *context)
 static kaa_error_t on_configuration_updated(void *context, const kaa_root_configuration_t *conf)
 {
     (void) context;
+    expbool = conf->expbool;
     if (expbool){
-      printf("changed expbool status to Celsius\n");
+      printf("changed degree parameter to Celsius\n");
     }else{
-      printf("changed expbool status to Fahrenheit\n");
-    }expbool = conf->expbool;
+      printf("changed degree parameter to Fahrenheit\n");
+    }
     return KAA_ERR_NONE;
 }
 int main(void)
@@ -85,8 +86,12 @@ int main(void)
     /* Obtain default configuration shipped within SDK. */
     const kaa_root_configuration_t *dflt = kaa_configuration_manager_get_configuration(
         kaa_client_get_context(kaa_client)->configuration_manager);
-    printf("current expbool status is %i\n", dflt->expbool);
     expbool = dflt->expbool;
+    if (expbool){
+      printf("current degree parameter is Celsius\n");
+    }else{
+      printf("current degree parameter is Fahrenheit\n");
+    }
 
     /* Configure data collection. */
     void *log_storage_context         = NULL;

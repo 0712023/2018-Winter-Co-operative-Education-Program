@@ -14,8 +14,8 @@
 
 #include <string.h>
 #include <errno.h>
-#include <wiringPi.h>
-#include <wiringSerial.h>
+#include <wiring/wiringPi.h>
+#include <wiring/wiringSerial.h>
 
 
 static int32_t sample_period;
@@ -25,12 +25,9 @@ extern kaa_error_t ext_unlimited_log_storage_create(void **log_storage_context_p
 static float get_temperature_FP(void)
 {
     /* For the sake of example, random data is used */
-
-
-
-
       char datastore[29];
-      if ((fd = serialOpen ("/dev/ttyUSB0", 19200)) < 0){
+      int fd ;
+      if (fd = serialOpen ("/dev/ttyUSB0", 19200) < 0){
         fprintf (stderr, "Unable to open serial device: %s\n", strerror (errno)) ;
         return 1 ;
       }
@@ -91,6 +88,7 @@ static float get_temperature_FP(void)
        //값이 계속 이상하게 나옴. 중요한건 멈추게 해야됨.
 
          }
+       }
 
 
         char store[5];
@@ -98,7 +96,7 @@ static float get_temperature_FP(void)
         sprintf(store, "0x%02X%2X", datastore[5], datastore[6]);
         float temp = strtol(store, NULL, 16);
         return temp * 0.1;
-   }
+
 }
 /* Periodically called by Kaa SDK. */
 static void FP_callback(void *context)
