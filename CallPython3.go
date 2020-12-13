@@ -6,14 +6,24 @@ package main
        "strconv"
    )
    func main() {
-       outputn, err := exec.Command("sudo", "python","/home/pi/workspace/getdata.py").Output()
-       if (err != nil) {
-           fmt.Println(err)
-       }
-       output := string(outputn[:len(outputn)-1])
-       outputf, errf := strconv.ParseFloat(output, 64)
-       if (errf != nil) {
-          fmt.Println(err)
-       }
-       fmt.Println(outputf)
-   }
+	outputt, err := exec.Command("sudo", "python", "/home/pi/workspace/getdata.py", "1").Output()
+	if (err != nil) {
+			fmt.Println(err)
+	}
+	temp, errt := strconv.ParseFloat(string(outputt[:len(outputt)-1]), 64)
+	if (errt != nil) {
+		 fmt.Println(errt)
+	}
+
+	settingt, errs :=exec.Command("sudo", "python", "/home/pi/workspace/getdata.py", "2").Output()
+	if (errs != nil) {
+			fmt.Println(errs)
+	}
+	setting, errf := strconv.ParseFloat(string(settingt[:len(settingt)-1]), 64)
+	if (errf != nil) {
+		 fmt.Println(err)
+	}
+	data := []float64{}
+	data = append(data, temp, setting)
+	fmt.Println(data)
+}
