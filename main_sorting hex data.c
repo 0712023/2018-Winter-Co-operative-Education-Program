@@ -15,8 +15,8 @@
 #include <string.h>
 #include <errno.h>
 #include <math.h>
-#include <wiring/wiringPi.h>
-#include <wiring/wiringSerial.h>
+#include <wiringPi.h>
+#include <wiringSerial.h>
 
 
 static int32_t sample_period;
@@ -27,8 +27,10 @@ static float get_temperature_FP(void)
 {
     /* For the sake of example, random data is used */
       char datastore[29];
+
       int fd ;
-      if (fd = serialOpen ("/dev/ttyUSB0", 19200) < 0){
+
+      if ((fd = serialOpen ("/dev/ttyUSB0", 19200)) < 0){
         fprintf (stderr, "Unable to open serial device: %s\n", strerror (errno)) ;
         return 1 ;
       }
@@ -40,43 +42,43 @@ static float get_temperature_FP(void)
                 serialPutchar(fd, hex1);
                 fflush (stdout) ;
              }
-         if(n ==1){
+           if(n ==1){
                int b = 0x01;
                unsigned char hex2 = (char) b;
-                serialPutchar(fd, hex2);
+               serialPutchar(fd, hex2);
                 fflush (stdout) ;
              }
-         if( n == 2){
+           if( n == 2){
                int c = 0x31;
                 unsigned char hex3 = (char) c;
                 serialPutchar(fd, hex3);
                 fflush (stdout) ;
              }
-         if(n == 3){
+           if(n == 3){
                int d = 0x00;
                 unsigned char hex4 = (char) d;
                 serialPutchar(fd, hex4);
                 fflush (stdout) ;
              }
-         if( n ==4){
+           if( n ==4){
                int e = 0x00;
                 unsigned char hex5 = (char) e;
                 serialPutchar(fd, hex5);
                 fflush (stdout) ;
              }
-         if(n == 5){
+           if(n == 5){
                int f = 0x00;
                 unsigned char hex6 = (char) f;
                 serialPutchar(fd, hex6);
                 fflush (stdout) ;
              }
-         if(n == 6){
+           if(n == 6){
                int g = 0x00;
                 unsigned char hex7 = (char) g;
                 serialPutchar(fd, hex7);
                 fflush (stdout) ;
              }
-         if(n == 7){
+           if(n == 7){
                int h = 0x03;
                 unsigned char hex8 = (char) h;
                 serialPutchar(fd, hex8);
@@ -87,45 +89,44 @@ static float get_temperature_FP(void)
          {   datastore[i] = serialGetchar(fd);
           fflush(stdout);
        //값이 계속 이상하게 나옴. 중요한건 멈추게 해야됨.
-
          }
        }
+       char hex[3];
+       memset(hex, 0, 3);
+       sprintf(hex, "%02x%02x", datastore[5], datastore[6]);
+         float decimal = 0;                  // 10진수를 저장할 변수
 
-
-        char store[5];
-        memset(store, 0, 5);
-        sprintf(store, "0x%02X%2X", datastore[5], datastore[6]);
-        float temp_hex[] = strtol(store, NULL, 16);
-
-        //convert hex to dec
-        int j = 0, val, len;
-        float temp_dec;
-        /* Find the length of total number of hex digit */
-        len = strlen(temp_hex);
-        len--;
-
-        for(j=0; temp_hex[j]!='\0'; j++)
+        int position = 0;
+        int i;
+        for ( i = strlen(hex) - 1; i >= 0; i--)    // 문자열을 역순으로 반복
         {
+            char ch = hex[i];         // 각 자릿수에 해당하는 문자를 얻음
 
-            /* Find the decimal representation of hex[i] */
-            if(hex[j]>='0' && hex[j]<='9')
+            if (ch >= 48 && ch <= 57)         // 문자가 0~9이면(ASCII 코드 48~57)
             {
-                val = hex[j] - 48;
+                // 문자에서 0에 해당하는 ASCII 코드 값을 빼고
+                // 16에 자릿수를 거듭제곱한 값을 곱함
+                decimal += (ch - 48) * pow(16, position);
             }
-            else if(hex[j]>='a' && hex[j]<='f')
-            {
-                val = hex[j] - 97 + 10;
+            else if (ch >= 65 && ch <= 70)    // 문자가 A~F이면(ASCII 코드 65~70)
+            {                                 // 대문자로 된 16진수의 처리
+                // 문자에서 (A에 해당하는 ASCII 코드 값 - 10)을 빼고
+                // 16에 자릿수를 거듭제곱한 값을 곱함
+                decimal += (ch - (65 - 10)) * pow(16, position);
             }
-            else if(hex[j]>='A' && hex[j]<='F')
-            {
-                val = hex[j] - 65 + 10;
+            else if (ch >= 97 && ch <= 102)   // 문자가 a~f이면(ASCII 코드 97~102)
+            {                                 // 소문자로 된 16진수의 처리
+                // 문자에서 (a에 해당하는 ASCII 코드 값 - 10)을 빼고
+                // 16에 자릿수를 거듭제곱한 값을 곱함
+                decimal += (ch - (97 - 10)) * pow(16, position);
             }
 
-            temp_dec += val * pow(16, len) * 0.1;
-            len--;
+            position++;
         }
 
-        return temp_dec;
+           // 300
+
+        return decimal*0.1;
 
 }
 /* Periodically called by Kaa SDK. */
