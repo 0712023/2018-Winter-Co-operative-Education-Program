@@ -12,27 +12,33 @@
 #include <utilities/kaa_log.h>
 #include <platform-impl/common/ext_log_upload_strategies.h>
 
+int fd;
+
 #include <string.h>
 #include <errno.h>
 #include <math.h>
 #include <wiringPi.h>
 #include <wiringSerial.h>
 
-int fd;
 static int32_t sample_period;
 static time_t  last_sample_time;
 extern kaa_error_t ext_unlimited_log_storage_create(void **log_storage_context_p, kaa_logger_t *logger);
-/* Retrieves current temperature. */
-static float get_temperature_FP(void)
-{
-    /* For the sake of example, random data is used */
-      char datastore[29];
 
+/* Retrieves current temperature. */
+char datastore[29];
+static float get_temperature_FP()
+{   char hex[5];
+   memset(hex, 0, 5);
+   sprintf(hex, "0x%02x%02x", datastore[5], datastore[6]);
+    float temp = strtol(hex, NULL, 16);
+   return temp*0.1;
+}
+int serialputget()
+{
       if ((fd = serialOpen ("/dev/ttyUSB0", 19200)) < 0){
         fprintf (stderr, "Unable to open serial device: %s\n", strerror (errno)) ;
         return 1 ;
       }
-
          for (int n =0; n<8; n++){
             if( n == 0){
                 int a = 0x02;
@@ -82,28 +88,21 @@ static float get_temperature_FP(void)
                 serialPutchar(fd, hex8);
                 fflush (stdout) ;
            }
-
-         for(int i=0;i<28;i++){
-          datastore[i] = serialGetchar(fd);
-          fflush(stdout);
-       //값이 계속 이상하게 나옴. 중요한건 멈추게 해야됨.
+      }
+         for(int z=0;z<28;z++){
+           datastore[z] = serialGetchar(fd);
+           fflush(stdout);
          }
-       }
-       char hex[5];
-       memset(hex, 0, 5);
-       sprintf(hex, "0x%02x%02x", datastore[5], datastore[6]);
-       float temp = strtol(hex, NULL, 16);
-       return temp * 0.1;
-
 }
 /* Periodically called by Kaa SDK. */
 static void FP_callback(void *context)
-{
+{    memset(datastore, 0, 29);
+    serialputget();
     time_t current_time = time(NULL);
     /* Respect sample period */
     if (difftime(current_time, last_sample_time) >= sample_period) {
         float temperature = get_temperature_FP();
-        printf("Sampled temperature: %f\n", temperature);
+        printf("FP temperature: %f\n", temperature);
         last_sample_time = current_time;
         kaa_user_log_record_t *log_record = kaa_logging_data_collection_create();
         log_record->temperature = temperature;
