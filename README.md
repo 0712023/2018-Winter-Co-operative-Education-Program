@@ -24,11 +24,53 @@
 
 ### Tools
 - Ubuntu Laptop
+  - IoT platform의 server역할을 수행하기 위한 노트북입니다. Server에 main IoT platform을 설치 후, 이 server에서 수집할 데이터의 타입, 환경변수 등등을 설정한 후 endpoint로 배포할 SDK를 제작했습니다. SDK의 배포는 보통 http post를 활용하여 전달했습니다.
 - Raspberry Pi
-- Foolproof
-- Python
+  - Xenon Foolproof Temperature Request Timer로부터 일정한 주기로 rs485통신을 통해 데이터를 요청하고, 반환받은 데이터를 SDK를 전달받아 설치한 endpoint release를 통해 서버 전달하는 역할을 합니다.
+- <a href=http://e-taesung.com/27>SmartQ Foolproof</a>
+  - 정해진 통신 프로토콜을 통해 데이터를 반환하는 디바이스입니다.
+  - 이 기기에 관한 자세한 내용은 CyberTechFriend에서 진행했던 프리랜서 <a href=https://github.com/CyberTechFriend-Outsourcing-Freelancer/FoolProof>repository</a>에서 확인할 수 있습니다.
 - Golang
+  - Kaa Opensource IoT Platform에서 endpoint로의 SDK를 배포할 때 개발자가 원하는 로직을 수행하도록 하는 logic을 구현하는 파일인 device.go가 golang으로 프로그래밍되어 있었습니다. 이 파일을 분석하기 위해 개인적으로 golang의 기본적인 코딩 지식을 공부했습니다.
+- Python
+### IoT Platform
+Open source IoT platform 으로 Kaa, Thingsboard, Edge X를 비교하였습니다.
+- <a href=https://www.kaaproject.org/>Kaa</a><br>
+<img src=https://i.imgur.com/iVJLGhB.png width=100><br>
+분산 처리 기반 Open source platform으로 클러스터로 구성되어 있는 서비스를 기반으로 처리하며 각 End Point 에 대한 SDK를 제공하는 형태로 쉽게 디바이스를 붙일 수 있게 되어 있습니다.
+- <a href=https://thingsboard.io/>Thingsboard</a><br>
+<img src=https://thingsboard.io/images/thingsboard_logo.png width=150><br>
+실시간 데이터에 대한 표현영역에서 강점을 가지는 Open source IoT platform 으로서 위젯 형태로 구성된 플랫폼입니다.
+- <a href=https://www.edgexfoundry.org/>Edge X Foundry</a><br>
+<img src=https://www.pngitem.com/pimgs/m/466-4665404_edgex-foundry-logo-hd-png-download.png width=200><br>
+마이크로서비스 기반 분산 처리 되는 형태로 구성되어 있으며 Edge 영역에서의 API를 기반으로한 통신과 데이터 전송을 기반으로 구성되어 있습니다.
+### Architecture
+- Kaa<br>
+<img src=https://i.imgur.com/FqPAAqF.png><br>
+- Thingsboard<br>
+<img src=https://i.imgur.com/ypql3zk.png width = 500><br>
+- Edge X Foundry<br>
+<img src=https://i.imgur.com/hqLyJrr.png width = 500><br>
 ## Project Details
+Kaa, Thingsboard, EdgeX 세 개의 Opensource IoT 플랫폼 중 CyberTechFriend 기업에 가장 적합하다고 판단한 플랫폼은 EdgeX이었습니다.
+### Edge X 서버 문서 작성
+EdgeX설치 가이드 사이트
+
+1. Docker 및 Docker compose설치
+
+2. https://github.com/edgexfoundry/developer-scripts/raw/master/compose-files/docker-compose-delhi-0.7.1.yml 파일 생성, 이름은 docker-compose.yml 로 저장.
+
+3. docker-compose pull
+   docker-compose up -d
+   docker-compose ps 차례로 실행하기.
+
+4. docker-compose.yml 에서 device-random 주석 삭제
+
+5. docker-compose up -d device-random실행 후
+
+```curl http://localhost:48080/api/v1/event/device/Random-Integer-Generator01/10```
+
+명령어 입력해서 데이터 값 뜨는지 확인.(처음에는 안떳는데 시간이 지나니 되는경우가 있었음)
 
 ## Review
 S-hero 때 스마트팩토리를 주제로 불량품을 검출하는 시스템 구축을 해보았습니다. 라즈베리파이와 아두이노에 연결된 센서의 데이터를 서버로 보내고, 서버에서 다시 컨베이어벨트의 구동과 서보모터의 가동을 하게하는 시스템이 결국 IoT라는 것을 알게 되었고, 그것을 좀더 확장하여 IoT에 대해 배우고자 이렇게 연구를 하게 되었습니다. 하지만 생각과는 달리, IoT 시스템을 구축하는 것은 생각보다 복잡하였고 설명이 부족해서 사용하기에 쉽지 않았습니다. Kaa 플랫폼의 분석을 거의 완료한 시점에 기업의 입장에서 적합하지 않은 플랫폼임을 알게 되고 EdgeX 플랫폼으로 주제를 바꾸게 되면서 난관에 부딪히기도 했습니다.
