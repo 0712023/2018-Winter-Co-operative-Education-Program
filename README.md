@@ -70,7 +70,7 @@ EdgeX설치 가이드 사이트
 ```bash
 curl http://localhost:48080/api/v1/event/device/Random-Integer-Generator01/10
 ```
-명령어 입력해서 데이터 값 뜨는지 확인.(처음에는 안떳는데 시간이 지나니 되는경우가 있었음)
+명령어 입력해서 데이터 값 뜨는지 확인.(처음에는 안떳는데 시간이 지나니 되는경우가 있었음)<br>
 6. MQTT 브로커 오픈.
 ```bash
 curl -X POST -d '{
@@ -91,18 +91,21 @@ curl -X POST -d '{
     "destination":"MQTT_TOPIC"
 }' http://localhost:48071/api/v1/registration
 ```
-을 터미널 창에 입력 후
+을 터미널 창에 입력 후<br>
+```bash
 mosquitto_sub -h broker.hivemq.com -p 1883 -t EdgeXQuickStartGuide
-를 입력후 데이터 오는지 확인,
-
+```
+를 입력후 데이터 오는지 확인,<br>
 또한 http://www.hivemq.com/demos/websocket-client/ 에 들어가서<br>
 1). connect 열기 <br>
 2). subscription에서 add new topic 클릭 <br>
 3). Topic을  EdgeXQuickStartGuide 입력하고 Subscribe. <br>
 이후 값은 위의 명령어로 입력된 데이터값이 web상에 보이게 됨.
 
-7. device control하기 by command.
+7. device control하기 by command.<br>
+```bash
 curl http://localhost:48082/api/v1/device/name/Random-Integer-Generator01
+```
 명령어 창에 입력하면
 ```json
 {
@@ -149,10 +152,10 @@ curl http://localhost:48082/api/v1/device/name/Random-Integer-Generator01
     }
 }
 ```
-위와같은 형식의 데이터값이 들어오게됨. 또한 위의 빨간색으로 표시된 두개가 아이디 형식으로써
-
+위와같은 형식의 데이터값이 들어오게됨. 또한 위의 ID에 해당하는 value가 아이디 값인데,
+```bash
 curl http://localhost:48082/api/v1/device/5c0e8a259f8fc20001a5d230/command/5c0e8a259f8fc20001a5d22b
-
+```
 위의 명령어에 이전에 얻은 아이디값을 넣은후 명령어를 입력해줘야됨(ID는 기계마다 다를수잇기에 확인해줘야함).
 ```json
 {
@@ -180,9 +183,7 @@ curl http://localhost:48082/api/v1/device/5c0e8a259f8fc20001a5d230/command/5c0e8
 ```
 이러면 위의 형식의 데이터가 들어오게됨. 이때의 데이터값은 -128부터 127까지 받아들이게 되며, 최소값과 최대값은 임의로 지정하여서 바꿀수 있음 이의 명령어 아래와 같음.
 ```bash
-curl -X PUT -d '[
-    {"Min_Int8": "0", "Max_Int8": "100"}
-]' http://localhost:48082/api/v1/device/5c0e8a259f8fc20001a5d230/command/5c0e8a259f8fc20001a5d22b
+curl -X PUT -d '[{"Min_Int8": "0", "Max_Int8": "100"}]' http://localhost:48082/api/v1/device/5c0e8a259f8fc20001a5d230/command/5c0e8a259f8fc20001a5d22b
 ```
 이때 0과 100은 최소값과 최대값을 지정하여서 입력해주면 되며, 위와 마친가지로 빨간색의 ID는 얻은 데이터 기기의 ID를 입력해야함.
 
@@ -237,12 +238,12 @@ sudo add-apt-repository ppa:longsleep/golang-backports
 sudo apt-get update 
 sudo apt-get install -y golang-go
 ```
-추후 emq 설치 진행과정에서 오류가 생기기 때문에 반드시 1.6 이상의 버전이 필요함.
-2. glide 설치 (밑과 다른 참고자료 https://glide.readthedocs.io/en/latest/getting-started/ 
-GOROOT와 GOPATH는 서로 달라야함. GOROOT는 go 가 설치된 루트로 설정되어있으며, 이에 GOPATH설정을 위해서 새로운 폴더를 만들어준다.
-현재 만들려는 GO 프로그램의 위치이다.
-아래의 경우 $HOME/edgeX/goroad
-$ GOPATH 설정 (필요하다면 환경변수 고정)
+추후 emq 설치 진행과정에서 오류가 생기기 때문에 반드시 1.6 이상의 버전이 필요함.<br>
+2. glide 설치 (밑과 다른 참고자료 https://glide.readthedocs.io/en/latest/getting-started/)<br>
+GOROOT와 GOPATH는 서로 달라야함. GOROOT는 go 가 설치된 루트로 설정되어있으며, 이에 GOPATH설정을 위해서 새로운 폴더를 만들어준다<br>
+현재 만들려는 GO 프로그램의 위치이다.<br>
+아래의 경우 $HOME/edgeX/goroad<br>
+$ GOPATH 설정 (필요하다면 환경변수 고정)<br>
 참고주소 https://medium.com/chequer/goroot%EC%99%80-gopath-77f44cbaa1d8
 ```bash
 export GOPATH=$HOME/edgeX/goroad
