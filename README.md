@@ -196,9 +196,6 @@ http://jinyongjeong.github.io/2016/06/06/bash_shell_environment_variable/
 1. golang 설치
 ```bash
 curl -o./go1.11.5.linux-amd64.tar.gz https://dl.google.com/go/go1.11.5.linux-amd64.tar.gz
-```
-
-```bash
 tar -C $HOME -xzf go1.11.5.linux-amd64.tar.gz
 ```
 라즈베리파이의 경우
@@ -232,10 +229,10 @@ go build
 ```
 ⇒ 입력 후 hello, world 뜨는지 확인
 
-- 주의 사항: 설치 후 go version을 입력하면 깔려 있지 않다. 이 경우 
+- 주의 사항: 설치 후 go version을 입력하면 깔려 있지 않다. 이 경우
 ```bash
 sudo add-apt-repository ppa:longsleep/golang-backports
-sudo apt-get update 
+sudo apt-get update
 sudo apt-get install -y golang-go
 ```
 추후 emq 설치 진행과정에서 오류가 생기기 때문에 반드시 1.6 이상의 버전이 필요함.<br>
@@ -248,7 +245,7 @@ $ GOPATH 설정 (필요하다면 환경변수 고정)<br>
 ```bash
 export GOPATH=$HOME/edgeX/goroad
 mkdir $GOPATH/bin
-export PATH=$GOPATH/bin:$PATH 
+export PATH=$GOPATH/bin:$PATH
 sudo curl https://glide.sh/get | sh
 go get github.com/Masterminds/glide
 cd $GOPATH/src/github.com/Masterminds/glide
@@ -271,7 +268,7 @@ $ go build
 $ glide up   
 # Update to newest versions of the package
 ```
-3. git 
+3. git
 ```bash
 sudo apt install git-all
 git --version
@@ -281,7 +278,7 @@ git --version
 주의) 시작 시 도커 실행시켜줘야 함
 ```bash
 sudo apt install build-essential
-mkdir -p $GOPATH/src/github.com/edgexfoundry 
+mkdir -p $GOPATH/src/github.com/edgexfoundry
 cd $GOPATH/src/github.com/edgexfoundry
 sudo git clone https://github.com/edgexfoundry/device-sdk-go.git
 shdo p
@@ -295,7 +292,7 @@ find .  -type f | xargs sed -i 's/device-sdk-go/device-simple/g'
 cd cmd/device-simple
 vim main.go
 ```
-import의 
+import의
 "github.com/edgexfoundry/device-simple/example/driver"를
 "github.com/edgexfoundry/device-simple/driver" 로 바꾸기
 ```bash
@@ -304,15 +301,15 @@ vim Makefile		#⇒ 아래와 같이 example 문자열을 제거
 cd $GOPATH/src/github.com/edgexfoundry/device-simple
 glide create
 glide get github.com/Masterminds/cookoo
-glide up 
+glide up
 glide install
-make build 
+make build
 ```
 이후
-https://docs.edgexfoundry.org/Ch-GettingStartedSDK.html 에서 
+https://docs.edgexfoundry.org/Ch-GettingStartedSDK.html 에서
 4.3.5. Customize your Device Service 부터 따라한다.
 
-4.3.9  Run your Device Service 실행 확인 시 
+4.3.9  Run your Device Service 실행 확인 시
 http://localhost:48080/api/v1/event/device/RandNum-Device01/100 로 확인하여야 한다.
 
 
