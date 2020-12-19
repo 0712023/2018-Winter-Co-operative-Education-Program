@@ -67,10 +67,253 @@ EdgeX설치 가이드 사이트
 4. docker-compose.yml 에서 device-random 주석 삭제
 
 5. docker-compose up -d device-random실행 후
-
-```curl http://localhost:48080/api/v1/event/device/Random-Integer-Generator01/10```
-
+```bash
+curl http://localhost:48080/api/v1/event/device/Random-Integer-Generator01/10
+```
 명령어 입력해서 데이터 값 뜨는지 확인.(처음에는 안떳는데 시간이 지나니 되는경우가 있었음)
+6. MQTT 브로커 오픈.
+```bash
+curl -X POST -d '{
+    "name":"QuickStartExport",
+    "addressable":{
+        "name":"HiveMQBroker",
+        "protocol":"tcp",
+        "address":"broker.hivemq.com",
+        "port":1883,
+        "publisher":"EdgeXExportPublisher",
+        "topic":"EdgeXQuickStartGuide"
+    },
+    "format":"JSON",
+    "filter":{
+        "deviceIdentifiers":["Random-Integer-Generator01"]
+    },
+    "enable":true,
+    "destination":"MQTT_TOPIC"
+}' http://localhost:48071/api/v1/registration
+```
+을 터미널 창에 입력 후
+mosquitto_sub -h broker.hivemq.com -p 1883 -t EdgeXQuickStartGuide
+를 입력후 데이터 오는지 확인,
+
+또한 http://www.hivemq.com/demos/websocket-client/ 에 들어가서<br>
+1). connect 열기 <br>
+2). subscription에서 add new topic 클릭 <br>
+3). Topic을  EdgeXQuickStartGuide 입력하고 Subscribe. <br>
+이후 값은 위의 명령어로 입력된 데이터값이 web상에 보이게 됨.
+
+7. device control하기 by command.
+curl http://localhost:48082/api/v1/device/name/Random-Integer-Generator01
+명령어 창에 입력하면
+```json
+{
+    "created":1544456741615,
+    "modified":0,
+    "origin":0,
+    "id":"5c0e8a259f8fc20001a5d22b",
+    "name":"GenerateRandomValue_Int8",
+    "get":{
+        "path":"/api/v1/device/{deviceId}/GenerateRandomValue_Int8",
+        "responses":[
+            {
+                "code":"200",
+                "description":null,
+                "expectedValues":["RandomValue_Int8"]
+            },
+            {
+                "code":"503",
+                "description":"service unavailable",
+                "expectedValues":[]
+            }
+        ],
+        "url":"http://edgex-core-command:48082/api/v1/device/5c0e8a259f8fc20001a5d230/command/5c0e8a259f8fc20001a5d22b"
+    },
+    "put":{
+        "path":"/api/v1/device/{deviceId}/GenerateRandomValue_Int8",
+        "responses":[
+            {
+                "code":"200",
+                "description":null,
+                "expectedValues":[]
+            },
+            {
+                "code":"503",
+                "description":"service unavailable",
+                "expectedValues":[]
+            }
+        ],
+        "parameterNames":[
+            "Min_Int8",
+            "Max_Int8"
+        ],
+        "url":"http://edgex-core-command:48082/api/v1/device/5c0e8a259f8fc20001a5d230/command/5c0e8a259f8fc20001a5d22b"
+    }
+}
+```
+위와같은 형식의 데이터값이 들어오게됨. 또한 위의 빨간색으로 표시된 두개가 아이디 형식으로써
+
+curl http://localhost:48082/api/v1/device/5c0e8a259f8fc20001a5d230/command/5c0e8a259f8fc20001a5d22b
+
+위의 명령어에 이전에 얻은 아이디값을 넣은후 명령어를 입력해줘야됨(ID는 기계마다 다를수잇기에 확인해줘야함).
+```json
+{
+    "id":"",
+    "pushed":0,
+    "device":"Random-Integer-Generator01",
+    "created":0,
+    "modified":0,
+    "origin":1544457033233,
+    "schedule":null,
+    "event":null,
+    "readings":[
+        {
+            "id":"",
+            "pushed":0,
+            "created":0,
+            "origin":1544457033233,
+            "modified":0,
+            "device":"Random-Integer-Generator01",
+            "name":"RandomValue_Int8",
+            "value":"-92"
+        }
+    ]
+}
+```
+이러면 위의 형식의 데이터가 들어오게됨. 이때의 데이터값은 -128부터 127까지 받아들이게 되며, 최소값과 최대값은 임의로 지정하여서 바꿀수 있음 이의 명령어 아래와 같음.
+```bash
+curl -X PUT -d '[
+    {"Min_Int8": "0", "Max_Int8": "100"}
+]' http://localhost:48082/api/v1/device/5c0e8a259f8fc20001a5d230/command/5c0e8a259f8fc20001a5d22b
+```
+이때 0과 100은 최소값과 최대값을 지정하여서 입력해주면 되며, 위와 마친가지로 빨간색의 ID는 얻은 데이터 기기의 ID를 입력해야함.
+
+Port 별 역할<br>
+<img src=https://i.imgur.com/gVnU7cy.png><br>
+### Edge X 디바이스 영역 문서 작성
+*개발 환경 구축을 위해 아래에서 설정하는 환경변수를 고정할 수 있다. 아래 url 참고
+http://jinyongjeong.github.io/2016/06/06/bash_shell_environment_variable/
+
+1. golang 설치
+```bash
+curl -o./go1.11.5.linux-amd64.tar.gz https://dl.google.com/go/go1.11.5.linux-amd64.tar.gz
+```
+
+```bash
+tar -C $HOME -xzf go1.11.5.linux-amd64.tar.gz
+```
+라즈베리파이의 경우
+```bash
+curl -o./go1.11.5.linux-armv6l.tar.gz https://dl.google.com/go/go1.11.5.linux-armv6l.tar.gz
+tar -C $HOME -xzf go1.11.5.linux-armv6l.tar.gz
+```
+
+⇒ (/usr/local/ 설치시 나중에 관리자권한 문제생김)
+```bash
+export PATH=$HOME/edgeX/go/bin:$PATH
+```
+⇒ (환경변수 고정 필요)
+
+-설치 여부 확인
+```bash
+mkdir $Home/go/src/hello
+vim hello.go
+```
+hello.go
+```go
+package main
+import "fmt"
+func main() {
+	fmt.Printf("hello, world\n")
+}
+```
+```bash
+go build
+./hello e
+```
+⇒ 입력 후 hello, world 뜨는지 확인
+
+- 주의 사항: 설치 후 go version을 입력하면 깔려 있지 않다. 이 경우 
+```bash
+sudo add-apt-repository ppa:longsleep/golang-backports
+sudo apt-get update 
+sudo apt-get install -y golang-go
+```
+추후 emq 설치 진행과정에서 오류가 생기기 때문에 반드시 1.6 이상의 버전이 필요함.
+2. glide 설치 (밑과 다른 참고자료 https://glide.readthedocs.io/en/latest/getting-started/ 
+GOROOT와 GOPATH는 서로 달라야함. GOROOT는 go 가 설치된 루트로 설정되어있으며, 이에 GOPATH설정을 위해서 새로운 폴더를 만들어준다.
+현재 만들려는 GO 프로그램의 위치이다.
+아래의 경우 $HOME/edgeX/goroad
+$ GOPATH 설정 (필요하다면 환경변수 고정)
+참고주소 https://medium.com/chequer/goroot%EC%99%80-gopath-77f44cbaa1d8
+```bash
+export GOPATH=$HOME/edgeX/goroad
+mkdir $GOPATH/bin
+export PATH=$GOPATH/bin:$PATH 
+sudo curl https://glide.sh/get | sh
+go get github.com/Masterminds/glide
+cd $GOPATH/src/github.com/Masterminds/glide
+make build
+```
+이후 glide create 명령어는 SDK 를 생성하고자하는 폴더에 명령어를 넣어줘야됨. 따라서 위의 과정까지만 진행.
+
+glide 사용 명령어
+ ```bash
+$ glide create                                  
+# Start a new workspace
+$ open glide.yaml
+# and edit away!
+$ glide get github.com/Masterminds/cookoo
+# Get a package and add to glide.yaml
+$ glide install
+# Install packages and dependencies
+$ go build
+# Go tools work normally
+$ glide up   
+# Update to newest versions of the package
+```
+3. git 
+```bash
+sudo apt install git-all
+git --version
+```
+
+4. EdgeX Device SDK for Go 설치
+주의) 시작 시 도커 실행시켜줘야 함
+```bash
+sudo apt install build-essential
+mkdir -p $GOPATH/src/github.com/edgexfoundry 
+cd $GOPATH/src/github.com/edgexfoundry
+sudo git clone https://github.com/edgexfoundry/device-sdk-go.git
+shdo p
+sudo chmod 777 -R .
+sudo mv device-sdk-go/ device-simple
+cd device-simple/example
+sudo mv */ ..
+cd ..
+grep -irl "device-sdk-go"
+find .  -type f | xargs sed -i 's/device-sdk-go/device-simple/g'
+cd cmd/device-simple
+vim main.go
+```
+import의 
+"github.com/edgexfoundry/device-simple/example/driver"를
+"github.com/edgexfoundry/device-simple/driver" 로 바꾸기
+```bash
+cd ../..
+vim Makefile		#⇒ 아래와 같이 example 문자열을 제거
+cd $GOPATH/src/github.com/edgexfoundry/device-simple
+glide create
+glide get github.com/Masterminds/cookoo
+glide up 
+glide install
+make build 
+```
+이후
+https://docs.edgexfoundry.org/Ch-GettingStartedSDK.html 에서 
+4.3.5. Customize your Device Service 부터 따라한다.
+
+4.3.9  Run your Device Service 실행 확인 시 
+http://localhost:48080/api/v1/event/device/RandNum-Device01/100 로 확인하여야 한다.
+
 
 ## Review
 S-hero 때 스마트팩토리를 주제로 불량품을 검출하는 시스템 구축을 해보았습니다. 라즈베리파이와 아두이노에 연결된 센서의 데이터를 서버로 보내고, 서버에서 다시 컨베이어벨트의 구동과 서보모터의 가동을 하게하는 시스템이 결국 IoT라는 것을 알게 되었고, 그것을 좀더 확장하여 IoT에 대해 배우고자 이렇게 연구를 하게 되었습니다. 하지만 생각과는 달리, IoT 시스템을 구축하는 것은 생각보다 복잡하였고 설명이 부족해서 사용하기에 쉽지 않았습니다. Kaa 플랫폼의 분석을 거의 완료한 시점에 기업의 입장에서 적합하지 않은 플랫폼임을 알게 되고 EdgeX 플랫폼으로 주제를 바꾸게 되면서 난관에 부딪히기도 했습니다.
