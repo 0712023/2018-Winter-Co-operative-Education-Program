@@ -83,8 +83,10 @@ EdgeX설치 가이드 사이트
 ```bash
 docker-compose pull
 docker-compose up -d
-docker-compose ps 차례로 실행하기.
+docker-compose ps
 ```
+차례로 실행하기.
+
 4. docker-compose.yml 에서 device-random 주석 삭제
 
 5. 
