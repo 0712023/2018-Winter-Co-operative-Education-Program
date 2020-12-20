@@ -60,14 +60,17 @@ EdgeX설치 가이드 사이트
 
 2. https://github.com/edgexfoundry/developer-scripts/raw/master/compose-files/docker-compose-delhi-0.7.1.yml 파일 생성, 이름은 docker-compose.yml 로 저장.
 
-3. docker-compose pull
-   docker-compose up -d
-   docker-compose ps 차례로 실행하기.
-
+3. 
+```bash
+docker-compose pull
+docker-compose up -d
+docker-compose ps 차례로 실행하기.
+```
 4. docker-compose.yml 에서 device-random 주석 삭제
 
-5. docker-compose up -d device-random실행 후
+5. 
 ```bash
+docker-compose up -d device-random
 curl http://localhost:48080/api/v1/event/device/Random-Integer-Generator01/10
 ```
 명령어 입력해서 데이터 값 뜨는지 확인.(처음에는 안떳는데 시간이 지나니 되는경우가 있었음)<br>
