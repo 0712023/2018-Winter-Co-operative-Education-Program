@@ -1,4 +1,4 @@
-# 2018 Winter Co-operative Education Program
+# Edge X Foundry-Opensource IoT Platform
 
 ## Project Synopsis
 - 행사명 : 2018년도 동계 현장실습프로그램(Co-operative Education Program, Co-op)
