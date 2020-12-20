@@ -17,10 +17,17 @@
 - 국내 IoT 기술 개발 현황
     - 국내 IoT 사업체는 1,991개(2016년 기준)이며, 종사자 수 50인 미만의 중·소형 사업체가 80% 이상을 차지하고 있으며 분야별 사업체 수는 서비스 분야가 1,089개 (전체 54.7%)로 가장 많고 그 다음으로 디바이스(24.7%), 네트워크(11.3%), 플랫폼(9.4%) 순서로 조사되고 있습니다.<br>
     - 종사자 규모별 사업체 수는 10 ~ 49인 규모의 사업체가 1,148개(전체 57.7%)로 가장 많고 그 다음으로 1 ~ 9인 규모의 사업체가 472개(전체 23.7%)인 상황이라 기술 개발에 있어서 선진국 대비 부족한 수준을 가지고 있다. 전체적인 기술은 미국 대비 82.9% 수준입니다.  
+  
+    <p align="center">
     <img src=https://i.imgur.com/rGhWcjI.png><img src=https://i.imgur.com/CdbcF9D.png><br>
+	</p>
+
 - 국외 IoT 기술 개발 현황
   - 미국의 사물인터넷 기술 개발 및 투자 현황은 굉장히 활발한 것으로 나타나며, 인텔과 Qualcomm과 같은 대기업들이 가장 활발한 투자를 하고 있으며 많은 벤처 캐피털들의 투자활동도 활발하게 이루어지고 있습니다.<br>
+
+  <p align="center">
   <img src=https://i.imgur.com/8wykhoJ.png><br>
+	</p>
 
 ### Tools
 - Ubuntu Laptop
@@ -46,11 +53,23 @@ Opensource IoT 플랫폼 으로 Kaa, Thingsboard, Edge X를 비교하였습니�
 마이크로서비스 기반 분산 처리 되는 형태로 구성되어 있으며 Edge 영역에서의 API를 기반으로한 통신과 데이터 전송을 기반으로 구성되어 있습니다.
 ### Architecture
 - Kaa<br>
+
+<p align="center">
 <img src=https://i.imgur.com/FqPAAqF.png><br>
+	</p>
+  
 - Thingsboard<br>
+
+<p align="center">
 <img src=https://i.imgur.com/ypql3zk.png width = 500><br>
+	</p>
+  
 - Edge X Foundry<br>
+
+<p align="center">
 <img src=https://i.imgur.com/hqLyJrr.png width = 500><br>
+	</p>
+
 ## Project Details
 Kaa, Thingsboard, EdgeX 세 개의 Opensource IoT 플랫폼 중 CyberTechFriend 기업에 가장 적합하다고 판단한 플랫폼은 EdgeX이었습니다.
 ### Edge X 서버 문서 작성
@@ -191,7 +210,10 @@ curl -X PUT -d '[{"Min_Int8": "0", "Max_Int8": "100"}]' http://localhost:48082/a
 이때 0과 100은 최소값과 최대값을 지정하여서 입력해주면 되며, 위와 마친가지로 빨간색의 ID는 얻은 데이터 기기의 ID를 입력해야함.
 
 Port 별 역할<br>
+<p align="center">
 <img src=https://i.imgur.com/gVnU7cy.png><br>
+	</p>
+  
 ### Edge X 디바이스 영역 문서 작성
 *개발 환경 구축을 위해 아래에서 설정하는 환경변수를 고정할 수 있다. 아래 url 참고
 http://jinyongjeong.github.io/2016/06/06/bash_shell_environment_variable/
