@@ -1,5 +1,17 @@
 # Edge X Foundry-Opensource IoT Platform
-
+## Keywords
+## Contents
+- Project Synopsis
+  - Purpose
+  - Necessity
+  - Background Knowledge
+  - Tools
+  - IoT Platform
+  - Architecture
+- Project Details
+  - Edge X Server
+  - Edge X Device
+- Review
 ## Project Synopsis
 - 행사명 : 2018년도 동계 현장실습프로그램(Co-operative Education Program, Co-op)
 - 주최 : <a href=https://linc.skku.edu/>성균관대학교 LINC+사업단</a>, <a href=http://www.cyberwin.co.kr/>CyberTechFriend</a>
@@ -17,7 +29,7 @@
 - 국내 IoT 기술 개발 현황
     - 국내 IoT 사업체는 1,991개(2016년 기준)이며, 종사자 수 50인 미만의 중·소형 사업체가 80% 이상을 차지하고 있으며 분야별 사업체 수는 서비스 분야가 1,089개 (전체 54.7%)로 가장 많고 그 다음으로 디바이스(24.7%), 네트워크(11.3%), 플랫폼(9.4%) 순서로 조사되고 있습니다.<br>
     - 종사자 규모별 사업체 수는 10 ~ 49인 규모의 사업체가 1,148개(전체 57.7%)로 가장 많고 그 다음으로 1 ~ 9인 규모의 사업체가 472개(전체 23.7%)인 상황이라 기술 개발에 있어서 선진국 대비 부족한 수준을 가지고 있다. 전체적인 기술은 미국 대비 82.9% 수준입니다.  
-  
+
     <p align="center">
     <img src=https://i.imgur.com/rGhWcjI.png><img src=https://i.imgur.com/CdbcF9D.png><br>
 	</p>
@@ -57,13 +69,13 @@ Opensource IoT 플랫폼 으로 Kaa, Thingsboard, Edge X를 비교하였습니�
 <p align="center">
 <img src=https://i.imgur.com/FqPAAqF.png><br>
 	</p>
-  
+
 - Thingsboard<br>
 
 <p align="center">
 <img src=https://i.imgur.com/ypql3zk.png width = 500><br>
 	</p>
-  
+
 - Edge X Foundry<br>
 
 <p align="center">
@@ -79,7 +91,7 @@ EdgeX설치 가이드 사이트
 
 2. https://github.com/edgexfoundry/developer-scripts/raw/master/compose-files/docker-compose-delhi-0.7.1.yml 파일 생성, 이름은 docker-compose.yml 로 저장.
 
-3. 
+3.
 ```bash
 docker-compose pull
 docker-compose up -d
@@ -89,7 +101,7 @@ docker-compose ps
 
 4. docker-compose.yml 에서 device-random 주석 삭제
 
-5. 
+5.
 ```bash
 docker-compose up -d device-random
 curl http://localhost:48080/api/v1/event/device/Random-Integer-Generator01/10
@@ -215,7 +227,7 @@ Port 별 역할<br>
 <p align="center">
 <img src=https://i.imgur.com/gVnU7cy.png><br>
 	</p>
-  
+
 ### Edge X 디바이스 영역 문서 작성
 *개발 환경 구축을 위해 아래에서 설정하는 환경변수를 고정할 수 있다. 아래 url 참고
 http://jinyongjeong.github.io/2016/06/06/bash_shell_environment_variable/
